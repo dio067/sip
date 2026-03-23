@@ -22,10 +22,6 @@ app.get("/api/logs", async (req, res) => {
   res.json(result.rows);
 });
 
-app.listen(PORT, () => {
-  console.log(`api on http://localhost:${PORT}`);
-});
-
 app.post("/api/logs", async (req, res) => {
   const { date } = req.body;
   const result = await pool.query(
@@ -33,4 +29,19 @@ app.post("/api/logs", async (req, res) => {
     [date],
   );
   res.status(201).json(result.rows[0]);
+});
+
+app.delete("/api/logs/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await pool.query(
+    "DELETE FROM logs WHERE id = $1 RETURNING id",
+    [id],
+  );
+  if (result.rowCount === 0)
+    return res.status(404).json({ error: "not found" });
+  res.json({ deleted: id });
+});
+
+app.listen(PORT, () => {
+  console.log(`api on http://localhost:${PORT}`);
 });
