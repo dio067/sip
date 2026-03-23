@@ -31,6 +31,17 @@ app.post("/api/logs", async (req, res) => {
   res.status(201).json(result.rows[0]);
 });
 
+app.get("/api/logs/history", async (req, res) => {
+  const result = await pool.query(`
+    SELECT date, COUNT(*)::int AS glasses
+    FROM logs
+    WHERE date >= CURRENT_DATE - INTERVAL '6 days'
+    GROUP BY date
+    ORDER BY date DESC
+  `);
+  res.json(result.rows);
+});
+
 app.delete("/api/logs/:id", async (req, res) => {
   const { id } = req.params;
   const result = await pool.query(
