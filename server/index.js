@@ -25,3 +25,12 @@ app.get("/api/logs", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`api on http://localhost:${PORT}`);
 });
+
+app.post("/api/logs", async (req, res) => {
+  const { date } = req.body;
+  const result = await pool.query(
+    "INSERT INTO logs (date) VALUES ($1) RETURNING *",
+    [date],
+  );
+  res.status(201).json(result.rows[0]);
+});
