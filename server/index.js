@@ -13,6 +13,15 @@ app.get("/api/health", (req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/api/logs", async (req, res) => {
+  const { date } = req.query;
+  const result = await pool.query(
+    "SELECT * FROM logs WHERE date = $1 ORDER BY logged_at ASC",
+    [date],
+  );
+  res.json(result.rows);
+});
+
 app.listen(PORT, () => {
   console.log(`api on http://localhost:${PORT}`);
 });
