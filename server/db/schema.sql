@@ -1,0 +1,14 @@
+CREATE TABLE IF NOT EXISTS logs (
+  id          SERIAL PRIMARY KEY,
+  date        DATE NOT NULL,
+  logged_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS settings (
+  id            SERIAL PRIMARY KEY,
+  goal          INTEGER NOT NULL DEFAULT 8
+);
+
+INSERT INTO settings (goal)
+SELECT 8
+WHERE NOT EXISTS (SELECT 1 FROM settings);
